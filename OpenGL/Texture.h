@@ -3,11 +3,13 @@
 #include "OpenGL.h"
 #include <vector>
 #include <cmath>
+#include <string>
 
 class Texture{
 public:
     struct Errors {
         bool failedToLocate = false;
+        bool failedToAllocate = false;
         bool failedToReadData = false;
         bool failedToGetTextureType = false;
     };
@@ -57,8 +59,8 @@ public:
     float getTextureYOffset(int index) const;
     inline int getWidth() const{ return width; }
     inline int getHeight() const{ return height; }
-    bool hasError();
-    const char* getErrorMessage();
+    bool hasError() const;
+    std::string getErrorMessage();
     inline Errors& getErrors(){ return errors; }
     ~Texture();
 private:

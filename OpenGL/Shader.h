@@ -6,23 +6,22 @@
 class Shader{
 public:
     struct Errors {
-        const char* shaderPath;
         bool failedToLocate = false;
         bool failedToAllocate = false;
         bool fileIsEmpty = false;
         bool unknownType = false;
         bool failedToCompileVertex = false;
-        const char* vertexMessage;
+        std::string vertexMessage;
         bool failedToCompileFragment = false;
-        const char* fragmentMessage;
+        std::string fragmentMessage;
         bool failedToCompileGeometry = false;
-        const char* geometryMessage;
+        std::string geometryMessage;
         bool failedToCompileTessEval = false;
-        const char* tessEvalMessage;
+        std::string tessEvalMessage;
         bool failedToCompileTessControl = false;
-        const char* tessControlMessage;
+        std::string tessControlMessage;
         bool failedToCompileCompute = false;
-        const char* computeMessage;
+        std::string computeMessage;
     };
 public:
     explicit Shader(const char* path);
@@ -37,7 +36,7 @@ public:
     void finish() const;
     void bind() const;
     static void unbind();
-    void bindAttribute(const char* name, unsigned int attribute);
+    void bindAttribute(const char* name, unsigned int attribute) const;
     void setUniformBool(const char* name, const bool& value);
     void setUniformLocation(const char* name, const int& value);
     void setUniform1i(const char* name, const int& value);
@@ -54,11 +53,11 @@ public:
     void setUniformMatrix4f(const char* name, const float* matrix);
     inline unsigned int getProgramID() const { return programID; }
     inline Errors& getErrors(){ return errors; }
-    bool hasError();
-    const char* getErrorMessage();
+    bool hasError() const;
+    std::string getErrorMessage();
     ~Shader();
 private:
-    const char* path = "";
+    const char* path;
     unsigned int programID;
     unsigned int vertID = -1;
     unsigned int fragID = -1;

@@ -36,13 +36,16 @@ Texture::Texture(const char *path, unsigned int target, int components) : path(p
                     newPath += "/front.bif";
                     break;
             }
-            //TODO: LOCATE
-            Binary_buffer binaryBuffer;
-            binary_buffer_read_from_file(&binaryBuffer, newPath.data());
-            width = binary_buffer_pop64(&binaryBuffer);
-            height = binary_buffer_pop64(&binaryBuffer);
-            int nrComponents = binary_buffer_pop64(&binaryBuffer);
-            data = (uint8_t*)binary_buffer_pop_string(&binaryBuffer, width * height * nrComponents);
+            BinaryBuffer binaryBuffer;
+            BinaryBufferError errorCache = binaryBufferReadFromFile(&binaryBuffer, newPath.data());
+            if(errorCache == BBE_CANT_FIND_FILE)
+                errors.failedToLocate = true;
+            if(errorCache == BBE_CANT_FIND_FILE)
+                errors.failedToAllocate = true;
+            width = binaryBufferPop64(&binaryBuffer);
+            height = binaryBufferPop64(&binaryBuffer);
+            int nrComponents = binaryBufferPop64(&binaryBuffer);
+            data = (uint8_t*)binaryBufferPopString(&binaryBuffer, width * height * nrComponents);
             if(components != -1)
                 nrComponents = components;
             if(data == nullptr) {
@@ -56,18 +59,21 @@ Texture::Texture(const char *path, unsigned int target, int components) : path(p
                     format = GL_RGBA;
                 cubeMapData.emplace_back(data);
             }
-            binary_buffer_destroy(&binaryBuffer);
+            binaryBufferDestroy(&binaryBuffer);
         }
     }else{
         std::string newPath(path);
         newPath.append(".bif");
-        //TODO: LOCATE
-        Binary_buffer binaryBuffer;
-        binary_buffer_read_from_file(&binaryBuffer, newPath.data());
-        width = binary_buffer_pop64(&binaryBuffer);
-        height = binary_buffer_pop64(&binaryBuffer);
-        int nrComponents = binary_buffer_pop64(&binaryBuffer);
-        data = (uint8_t*)binary_buffer_pop_string(&binaryBuffer, width * height * nrComponents);
+        BinaryBuffer binaryBuffer;
+        BinaryBufferError errorCache = binaryBufferReadFromFile(&binaryBuffer, newPath.data());
+        if(errorCache == BBE_CANT_FIND_FILE)
+            errors.failedToLocate = true;
+        if(errorCache == BBE_CANT_FIND_FILE)
+            errors.failedToAllocate = true;
+        width = binaryBufferPop64(&binaryBuffer);
+        height = binaryBufferPop64(&binaryBuffer);
+        int nrComponents = binaryBufferPop64(&binaryBuffer);
+        data = (uint8_t*)binaryBufferPopString(&binaryBuffer, width * height * nrComponents);
         if(components != -1)
             nrComponents = components;
         if(data == nullptr) {
@@ -81,7 +87,7 @@ Texture::Texture(const char *path, unsigned int target, int components) : path(p
                 format = GL_RGBA;
             glGenTextures(1, &id);
         }
-        binary_buffer_destroy(&binaryBuffer);
+        binaryBufferDestroy(&binaryBuffer);
     }
 }
 
@@ -257,26 +263,28 @@ float Texture::getTextureYOffset(int index) const{
     return factor * row;
 }
 
-bool Texture::hasError(){
-    return !(!errors.failedToGetTextureType &&
-             !errors.failedToLocate &&
-             !errors.failedToReadData);
+bool Texture::hasError() const{
+    return errors.failedToGetTextureType || errors.failedToReadData || errors.failedToLocate || errors.failedToAllocate;
 }
 
-const char* Texture::getErrorMessage() {
-    std::string result("Path: ");
-    result.append(path);
-    result.append("\n");
+std::string Texture::getErrorMessage() {
+    std::string result;
+    if (!(path && !path[0])) {
+        result.append(path);
+        result.append("\n");
+    }
     if(!hasError())
         result.append("Successfully loaded");
     if(errors.failedToLocate)
         result.append("Failed to locate Texture\n");
+    if(errors.failedToAllocate)
+        result.append("Failed to allocate Memory\n");
     if(errors.failedToReadData)
         result.append("Failed to load Texture Data\n");
     if(errors.failedToGetTextureType)
         result.append("Failed to get Type\n");
     result.append("\n");
-    return result.c_str();
+    return result;
 }
 
 Texture::~Texture() {

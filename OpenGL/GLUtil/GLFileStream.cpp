@@ -1,11 +1,11 @@
 #include "GLFileStream.h"
 
-void binary_buffer_destroy(Binary_buffer_pointer buffer) {
+void binaryBufferDestroy(BinaryBufferPointer buffer) {
     free(buffer->_byte_array);
 }
 
-uint64_t binary_buffer_pop64(Binary_buffer_pointer buffer) {
-    if(buffer->_bytes < buffer->_bytes_off + 8) return 0;
+uint64_t binaryBufferPop64(BinaryBufferPointer buffer) {
+    if (buffer->_bytes < buffer->_bytes_off + 8) return 0;
     return (buffer->_byte_array[buffer->_bytes_off++] * (1ull << 0))
            | (buffer->_byte_array[buffer->_bytes_off++] * (1ull << 8))
            | (buffer->_byte_array[buffer->_bytes_off++] * (1ull << 16))
@@ -16,33 +16,34 @@ uint64_t binary_buffer_pop64(Binary_buffer_pointer buffer) {
            | (buffer->_byte_array[buffer->_bytes_off++] * (1ull << 56));
 }
 
-const char* binary_buffer_pop_string(Binary_buffer_pointer buffer, uint64_t string_size) {
-    char* _binary_string_buffer = (char*)malloc(string_size);
-    memcpy(_binary_string_buffer, &buffer->_byte_array[buffer->_bytes_off], string_size);
-    return _binary_string_buffer;
+const char *binaryBufferPopString(BinaryBufferPointer buffer, uint64_t stringSize) {
+    char *BinaryStringBuffer = (char *) malloc(stringSize);
+    memcpy(BinaryStringBuffer, &buffer->_byte_array[buffer->_bytes_off], stringSize);
+    return BinaryStringBuffer;
 }
 
 typedef const char* Path;
 
-void binary_buffer_read_from_file(Binary_buffer_pointer buffer, Path file_path) {
-    FILE* _f = fopen(file_path, "rb");
-    if(_f == NULL) {
+_Binary_buffer_error binaryBufferReadFromFile(BinaryBufferPointer buffer, Path filePath) {
+    FILE *F = fopen(filePath, "rb");
+    if (F == NULL) {
         buffer->_byte_array = NULL;
-        return;
+        return _Binary_buffer_error::BBE_CANT_FIND_FILE;
     }
 
-    fseek(_f, 0, SEEK_END);
-    uint64_t _len = ftell(_f);
-    rewind(_f);
+    fseek(F, 0, SEEK_END);
+    uint64_t _len = ftell(F);
+    rewind(F);
 
-    buffer->_byte_array = (uint8_t*)malloc(_len);
-    if(buffer->_byte_array == NULL) {
-        return;
+    buffer->_byte_array = (uint8_t *) malloc(_len);
+    if (buffer->_byte_array == NULL) {
+        return _Binary_buffer_error::BBE_CANT_ALLOC_MEM;
     }
     buffer->_bytes = _len;
     buffer->_bytes_off = 0;
 
-    fread(buffer->_byte_array, 1, _len, _f);
+    fread(buffer->_byte_array, 1, _len, F);
 
-    fclose(_f);
+    fclose(F);
+    return _Binary_buffer_error::BBE_OK;
 }

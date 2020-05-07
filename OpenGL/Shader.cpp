@@ -126,7 +126,7 @@ Shader::Shader(const char* path) : path(path){
             tessEID = compileShader(GL_TESS_EVALUATION_SHADER, tessEval->data());
             glAttachShader(programID, tessEID);
         }
-        if(!compute->empty()){
+        if (!compute->empty()){
             computeID = compileShader(GL_COMPUTE_SHADER, compute->data());
             glAttachShader(programID, computeID);
         }
@@ -330,25 +330,24 @@ unsigned int Shader::compileShader(unsigned int type, const char* source) {
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
         char* message = (char*)alloca(length * sizeof(char));
         glGetShaderInfoLog(id, length, &length, message);
-        switch(type){
-            case GL_VERTEX_SHADER:
-                errors.failedToCompileVertex = true;
-                errors.vertexMessage = message;
-            case GL_FRAGMENT_SHADER:
-                errors.failedToCompileFragment = true;
-                errors.fragmentMessage = message;
-            case GL_GEOMETRY_SHADER:
-                errors.failedToCompileGeometry = true;
-                errors.geometryMessage = message;
-            case GL_TESS_CONTROL_SHADER:
-                errors.failedToCompileTessControl = true;
-                errors.tessControlMessage = message;
-            case GL_TESS_EVALUATION_SHADER:
-                errors.failedToCompileTessEval = true;
-                errors.tessEvalMessage = message;
-            case GL_COMPUTE_SHADER:
-                errors.failedToCompileCompute = true;
-                errors.computeMessage = message;
+        if(type == GL_VERTEX_SHADER){
+            errors.failedToCompileVertex = true;
+            errors.vertexMessage = message;
+        }else if(type == GL_FRAGMENT_SHADER){
+            errors.failedToCompileFragment = true;
+            errors.fragmentMessage = message;
+        }else if(type == GL_GEOMETRY_SHADER){
+            errors.failedToCompileGeometry = true;
+            errors.geometryMessage = message;
+        }else if(type == GL_TESS_CONTROL_SHADER){
+            errors.failedToCompileTessControl = true;
+            errors.tessControlMessage = message;
+        }else if(type == GL_TESS_EVALUATION_SHADER){
+            errors.failedToCompileTessEval = true;
+            errors.tessEvalMessage = message;
+        }else if(type == GL_COMPUTE_SHADER){
+            errors.failedToCompileCompute = true;
+            errors.computeMessage = message;
         }
         glDeleteShader(id);
         return 0;
@@ -356,23 +355,25 @@ unsigned int Shader::compileShader(unsigned int type, const char* source) {
     return id;
 }
 
-bool Shader::hasError(){
-    return !(!errors.failedToLocate &&
-             !errors.failedToAllocate &&
-             !errors.unknownType &&
-             !errors.fileIsEmpty &&
-             !errors.failedToCompileVertex &&
-             !errors.failedToCompileFragment &&
-             !errors.failedToCompileGeometry &&
-             !errors.failedToCompileTessEval &&
-             !errors.failedToCompileCompute &&
-             !errors.failedToCompileTessControl);
+bool Shader::hasError() const{
+    return errors.failedToLocate ||
+             errors.failedToAllocate ||
+             errors.unknownType ||
+             errors.fileIsEmpty ||
+             errors.failedToCompileVertex ||
+             errors.failedToCompileFragment ||
+             errors.failedToCompileGeometry ||
+             errors.failedToCompileTessEval ||
+             errors.failedToCompileCompute ||
+             errors.failedToCompileTessControl;
 }
 
-const char *Shader::getErrorMessage() {
-    std::string result("Path: ");
-    result.append(path);
-    result.append("\n");
+std::string Shader::getErrorMessage() {
+    std::string result;
+    if (!(path && !path[0])) {
+        result.append(path);
+        result.append("\n");
+    }
     if(!hasError())
         result.append("Successfully loaded");
     if(errors.failedToLocate)
@@ -408,7 +409,7 @@ const char *Shader::getErrorMessage() {
         result.append(errors.computeMessage);
     }
     result.append("\n");
-    return result.c_str();
+    return result;
 }
 
 void Shader::bind() const {
@@ -429,7 +430,7 @@ int Shader::getUniform(const char* name) {
     }
 }
 
-void Shader::bindAttribute(const char* name, unsigned int attribute){
+void Shader::bindAttribute(const char* name, unsigned int attribute) const{
     glBindAttribLocation(programID, attribute, name);
 }
 

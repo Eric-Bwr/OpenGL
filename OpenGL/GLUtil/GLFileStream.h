@@ -7,22 +7,32 @@
 #include <cctype>
 #include <tchar.h>
 
+enum _Binary_buffer_error {
+    BBE_OK = 0,
+    BBE_CANT_FIND_FILE,
+    BBE_CANT_ALLOC_MEM
+};
+typedef enum _Binary_buffer_error BinaryBufferError;
+typedef enum _Binary_buffer_error& BinaryBufferErrorReference;
+typedef enum _Binary_buffer_error const BinaryBufferErrorConst;
+typedef enum _Binary_buffer_error* BinaryBufferErrorPointer;
+typedef enum _Binary_buffer_error* const BinaryBufferErrorConstPointer;
+
 struct _Binary_buffer {
     uint8_t* _byte_array;
     uint64_t _bytes;
     uint64_t _bytes_off;
 };
+typedef struct _Binary_buffer BinaryBuffer;
+typedef struct _Binary_buffer& BinaryBufferReference;
+typedef struct _Binary_buffer const BinaryBufferConst;
+typedef struct _Binary_buffer* BinaryBufferPointer;
+typedef struct _Binary_buffer* const BinaryBufferConstPointer;
 
-typedef _Binary_buffer Binary_buffer;
-typedef _Binary_buffer& Binary_buffer_reference;
-typedef _Binary_buffer const Binary_buffer_const;
-typedef _Binary_buffer* Binary_buffer_pointer;
-typedef _Binary_buffer* const Binary_buffer_const_pointer;
-
-void binary_buffer_destroy(Binary_buffer_pointer buffer);
-uint64_t binary_buffer_pop64(Binary_buffer_pointer buffer);
-const char* binary_buffer_pop_string(Binary_buffer_pointer buffer, uint64_t string_size);
+void binaryBufferDestroy(BinaryBufferPointer buffer);
+uint64_t binaryBufferPop64(BinaryBufferPointer buffer);
+const char* binaryBufferPopString(BinaryBufferPointer buffer, uint64_t string_size);
 
 typedef const char* Path;
 
-void binary_buffer_read_from_file(Binary_buffer_pointer buffer, Path file_path);
+BinaryBufferError binaryBufferReadFromFile(BinaryBufferPointer buffer, Path file_path);
