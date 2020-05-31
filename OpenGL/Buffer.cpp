@@ -99,6 +99,12 @@ IndicesBufferObject::IndicesBufferObject(const unsigned int* data, uint64_t coun
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, drawType);
 }
 
+void IndicesBufferObject::subData(const void *data, uint64_t size, unsigned int offset, unsigned int drawMode) const {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, drawMode);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
+}
+
 void IndicesBufferObject::bind() const {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 }
