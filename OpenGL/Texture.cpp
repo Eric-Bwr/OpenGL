@@ -97,13 +97,13 @@ void Texture::load(bool simple) {
         repeat();
         minNear();
         magNear();
-        glTexImage2D(target, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(target, 0, internalFormat, width, height, 0, format, type, data);
     } else {
         glTexParameterf(target, GL_TEXTURE_LOD_BIAS, bias);
         repeat();
         minNearMipLinear();
         magLinear();
-        glTexImage2D(target, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(target, 0, internalFormat, width, height, 0, format, type, data);
         generateMipMap();
     }
 }
@@ -112,24 +112,24 @@ void Texture::load(){
     glBindTexture(target, id);
     switch (target){
         case GL_TEXTURE_2D:
-            glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
             break;
         case GL_TEXTURE_2D_MULTISAMPLE:
             glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, fixedSamples);
             break;
         case GL_TEXTURE_2D_ARRAY:
-            glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, internalFormat, width, height, depth, 0, format, GL_UNSIGNED_BYTE, data);
+            glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, internalFormat, width, height, depth, 0, format, type, data);
             break;
         case GL_TEXTURE_2D_MULTISAMPLE_ARRAY:
             glTexImage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, samples, format, width, height, depth, fixedSamples);
             break;
         case GL_TEXTURE_3D:
-            glTexImage3D(GL_TEXTURE_3D, 0, internalFormat, width, height, depth, 0, format, GL_UNSIGNED_BYTE, data);
+            glTexImage3D(GL_TEXTURE_3D, 0, internalFormat, width, height, depth, 0, format, type, data);
             break;
         case GL_TEXTURE_CUBE_MAP:
             for(int i = 0; i < 6; i++){
                 glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, cubeMapData.at(i));
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, type, cubeMapData.at(i));
             }
             break;
         default:
@@ -142,24 +142,24 @@ void Texture::resize(int width, int height){
     glBindTexture(target, id);
     switch (target) {
         case GL_TEXTURE_2D:
-            glTexImage2D(target, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            glTexImage2D(target, 0, internalFormat, width, height, 0, format, type, data);
             break;
         case GL_TEXTURE_2D_MULTISAMPLE:
             glTexImage2DMultisample(target, samples, format, width, height, fixedSamples);
             break;
         case GL_TEXTURE_2D_ARRAY:
-            glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, internalFormat, width, height, depth, 0, format, GL_UNSIGNED_BYTE, data);
+            glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, internalFormat, width, height, depth, 0, format, type, data);
             break;
         case GL_TEXTURE_2D_MULTISAMPLE_ARRAY:
             glTexImage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, samples, format, width, height, depth, fixedSamples);
             break;
         case GL_TEXTURE_3D:
-            glTexImage3D(GL_TEXTURE_3D, 0, internalFormat, width, height, depth, 0, format, GL_UNSIGNED_BYTE, data);
+            glTexImage3D(GL_TEXTURE_3D, 0, internalFormat, width, height, depth, 0, format, type, data);
             break;
         case GL_TEXTURE_CUBE_MAP:
             for(int i = 0; i < 6; i++){
                 glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, cubeMapData.at(i));
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, type, cubeMapData.at(i));
             }
             break;
         default:

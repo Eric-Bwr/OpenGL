@@ -5,7 +5,6 @@ InstanceBuffer::InstanceBuffer(const void* data, uint64_t size, unsigned int dra
 }
 
 void InstanceBuffer::changeData(const void* data, uint64_t size, unsigned int offset, unsigned int drawMode) {
-    vbo->bind();
     vbo->subData(data, size, offset, drawMode);
 }
 

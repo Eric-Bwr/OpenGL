@@ -30,6 +30,7 @@ public:
     inline void setInternalFormat(unsigned int internalFormat) { this->internalFormat = internalFormat; }
     inline void setFormat(unsigned int format) { this->format = format; }
     inline void setTarget(unsigned int target) { this->target = target; }
+    inline void setType(unsigned int type) { this->type = type; }
     void resize(int width, int height);
     void setMaxLevel(int level) const;
     void setBaseLevel(int level) const;
@@ -67,7 +68,7 @@ private:
     const char* path;
     bool fixedSamples = true;
     float bias = -0.4f, factor;
-    unsigned int target = GL_TEXTURE_2D, internalFormat = GL_RGBA8, format = GL_RGBA, depth;
+    unsigned int target = GL_TEXTURE_2D, internalFormat = GL_RGBA8, format = GL_RGBA, type = GL_UNSIGNED_BYTE, depth;
     unsigned int id;
     int numberOfRows = 1, samples = 4;
     int width, height;
