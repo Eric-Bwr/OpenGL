@@ -190,6 +190,18 @@ void Texture::repeat() const {
     glTexParameteri(target, GL_TEXTURE_WRAP_R, GL_REPEAT);
 }
 
+void Texture::mirroredRepeat() const {
+    glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(target, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+}
+
+void Texture::clampEdgeMirrored() const {
+    glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE);
+    glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE);
+    glTexParameteri(target, GL_TEXTURE_WRAP_R, GL_MIRROR_CLAMP_TO_EDGE);
+}
+
 void Texture::minNear() const {
     glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
