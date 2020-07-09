@@ -6,7 +6,7 @@
 #include <string>
 
 class Texture{
-public:
+private:
     struct Errors {
         bool failedToLocate = false;
         bool failedToAllocate = false;

@@ -8,5 +8,6 @@ file(GLOB_RECURSE SOURCE_FILES "${PROJECT_NAME}/*.cpp" "${PROJECT_NAME}/*.h" "${
 set(dir ${CMAKE_CURRENT_SOURCE_DIR})
 
 include_directories(${PROJECT_NAME})
+include_directories(Dependencies)
 
 add_library(${PROJECT_NAME} ${SOURCE_FILES})
