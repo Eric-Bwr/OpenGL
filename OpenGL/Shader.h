@@ -24,8 +24,8 @@ public:
         std::string computeMessage;
     };
 public:
-    explicit Shader(const char* path);
     explicit Shader();
+    explicit Shader(const char* path);
     void addFromFile(const char* path);
     void addVertexShader(const char *vertex);
     void addFragmentShader(const char *fragment);

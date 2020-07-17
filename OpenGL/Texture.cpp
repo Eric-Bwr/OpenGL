@@ -139,6 +139,8 @@ void Texture::load(){
 }
 
 void Texture::resize(int width, int height){
+    this->width = width;
+    this->height = height;
     glBindTexture(target, id);
     switch (target) {
         case GL_TEXTURE_2D:
