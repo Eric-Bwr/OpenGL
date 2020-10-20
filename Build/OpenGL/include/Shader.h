@@ -24,8 +24,8 @@ public:
         std::string computeMessage;
     };
 public:
-    explicit Shader(const char* path);
     explicit Shader();
+    explicit Shader(const char* path);
     void addFromFile(const char* path);
     void addVertexShader(const char *vertex);
     void addFragmentShader(const char *fragment);
@@ -36,6 +36,7 @@ public:
     void finish() const;
     void bind() const;
     static void unbind();
+    void reload();
     void bindAttribute(const char* name, unsigned int attribute) const;
     void setUniformBool(const char* name, const bool& value);
     void setUniformLocation(const char* name, const int& value);

@@ -36,6 +36,7 @@ public:
     void finish() const;
     void bind() const;
     static void unbind();
+    void reload();
     void bindAttribute(const char* name, unsigned int attribute) const;
     void setUniformBool(const char* name, const bool& value);
     void setUniformLocation(const char* name, const int& value);

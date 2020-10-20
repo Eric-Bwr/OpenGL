@@ -132,20 +132,6 @@ Shader::Shader(const char* path) : path(path){
         }
         glLinkProgram(programID);
         glValidateProgram(programID);
-        if(vertID != -1)
-            glDeleteShader(vertID);
-        if(fragID != -1)
-            glDeleteShader(fragID);
-        if(geoID != -1)
-            glDeleteShader(geoID);
-        if(computeID != -1)
-            glDeleteShader(computeID);
-        if(tessCID != -1)
-            glDeleteShader(tessCID);
-        if(tessEID != -1)
-            glDeleteShader(tessEID);
-        if(computeID != -1)
-            glDeleteShader(computeID);
         delete vertex;
         delete fragment;
         delete geometry;
@@ -153,6 +139,7 @@ Shader::Shader(const char* path) : path(path){
         delete tessEval;
         delete compute;
     }
+    glUseProgram(programID);
 }
 
 Shader::Shader() {
@@ -176,8 +163,7 @@ void Shader::addFromFile(const char* path){
         std::vector<std::string> splitData;
         std::string _data(fileData);
         std::string buffer;
-        for(uint64_t i = 0; i < _data.size(); i++){
-            char letter = _data.at(i);
+        for(char letter : _data){
             if(letter == '\n' || letter == '\r') {
                 splitData.emplace_back(buffer);
                 buffer.clear();
@@ -185,8 +171,8 @@ void Shader::addFromFile(const char* path){
             else buffer += letter;
         }
         splitData.emplace_back(buffer);
-        for(uint64_t i = 0; i < splitData.size(); i++) {
-            char* line = splitData.at(i).data();
+        for(auto & i : splitData) {
+            char* line = i.data();
             if (strstr(line, "#vertex") != nullptr) {
                 type = 0;
             }else if (strstr(line, "#fragment") != nullptr) {
@@ -303,20 +289,6 @@ void Shader::addTessellationEvaluationShader(const char *tessEval){
 void Shader::finish() const{
     glLinkProgram(programID);
     glValidateProgram(programID);
-    if(vertID != -1)
-        glDeleteShader(vertID);
-    if(fragID != -1)
-        glDeleteShader(fragID);
-    if(geoID != -1)
-        glDeleteShader(geoID);
-    if(computeID != -1)
-        glDeleteShader(computeID);
-    if(tessCID != -1)
-        glDeleteShader(tessCID);
-    if(tessEID != -1)
-        glDeleteShader(tessEID);
-    if(computeID != -1)
-        glDeleteShader(computeID);
 }
 
 unsigned int Shader::compileShader(unsigned int type, const char* source) {
@@ -420,6 +392,135 @@ void Shader::unbind() {
     glUseProgram(0);
 }
 
+void Shader::reload() {
+    char* fileData = readFile(path);
+    if (!fileData) {
+        errors.failedToLocate = true;
+    }else{
+        int type = -1;
+        auto vertex = new std::string;
+        auto fragment = new std::string;
+        auto geometry = new std::string;
+        auto tessControl = new std::string;
+        auto tessEval = new std::string;
+        auto compute = new std::string;
+        std::vector<std::string> splitData;
+        std::string _data(fileData);
+        std::string buffer;
+        for(char letter : _data){
+            if(letter == '\n' || letter == '\r') {
+                splitData.emplace_back(buffer);
+                buffer.clear();
+            }
+            else buffer += letter;
+        }
+        splitData.emplace_back(buffer);
+        for(auto & i : splitData) {
+            char* line = i.data();
+            if (strstr(line, "#vertex") != nullptr) {
+                type = 0;
+            }else if (strstr(line, "#fragment") != nullptr) {
+                type = 1;
+            }else if (strstr(line, "#geometry") != nullptr) {
+                type = 2;
+            }else if (strstr(line, "#tessControl") != nullptr) {
+                type = 3;
+            }else if (strstr(line, "#tessEval") != nullptr) {
+                type = 4;
+            }else if (strstr(line, "#compute") != nullptr) {
+                type = 5;
+            } else {
+                switch(type) {
+                    case -1: {
+                        errors.unknownType = true;
+                    }
+                    case 0: {
+                        vertex->append(line);
+                        *vertex += "\n";
+                        break;
+                    }
+                    case 1: {
+                        fragment->append(line);
+                        *fragment += "\n";
+                        break;
+                    }
+                    case 2: {
+                        geometry->append(line);
+                        *geometry += "\n";
+                        break;
+                    }
+                    case 3: {
+                        tessControl->append(line);
+                        *tessControl += "\n";
+                        break;
+                    }
+                    case 4: {
+                        tessEval->append(line);
+                        *tessEval += "\n";
+                        break;
+                    }
+                    case 5: {
+                        compute->append(line);
+                        *compute += "\n";
+                        break;
+                    }
+                }
+            }
+        }
+        if(!hasError()) {
+            if(vertID != -1)
+                glDetachShader(programID, vertID);
+            if(fragID != -1)
+                glDetachShader(programID, fragID);
+            if(geoID != -1)
+                glDetachShader(programID, geoID);
+            if(tessCID != -1)
+                glDetachShader(programID, tessCID);
+            if(tessEID != -1)
+                glDetachShader(programID, tessEID);
+            if(computeID != -1)
+                glDetachShader(programID, computeID);
+            glDeleteProgram(programID);
+            locations.clear();
+            programID = glCreateProgram();
+            glUseProgram(programID);
+            if (!vertex->empty()) {
+                vertID = compileShader(GL_VERTEX_SHADER, vertex->data());
+                glAttachShader(programID, vertID);
+            }
+            if (!fragment->empty()) {
+                fragID = compileShader(GL_FRAGMENT_SHADER, fragment->data());
+                glAttachShader(programID, fragID);
+            }
+            if (!geometry->empty()) {
+                geoID = compileShader(GL_GEOMETRY_SHADER, geometry->data());
+                glAttachShader(programID, geoID);
+            }
+            if (!tessControl->empty()) {
+                tessCID = compileShader(GL_TESS_CONTROL_SHADER, tessControl->data());
+                glAttachShader(programID, tessCID);
+            }
+            if (!tessEval->empty()) {
+                tessEID = compileShader(GL_TESS_EVALUATION_SHADER, tessEval->data());
+                glAttachShader(programID, tessEID);
+            }
+            if (!compute->empty()) {
+                computeID = compileShader(GL_COMPUTE_SHADER, compute->data());
+                glAttachShader(programID, computeID);
+            }
+            glLinkProgram(programID);
+            glValidateProgram(programID);
+            delete vertex;
+            delete fragment;
+            delete geometry;
+            delete tessControl;
+            delete tessEval;
+            delete compute;
+        }
+    }
+    glUseProgram(programID);
+}
+
 int Shader::getUniform(const char* name) {
     if(locations.count(name)){
         return locations.at(name);
@@ -491,10 +592,19 @@ void Shader::setUniformMatrix4f(const char* name, const float* matrix) {
 }
 
 Shader::~Shader() {
-    unbind();
-    glDetachShader(programID, vertID);
-    glDetachShader(programID, fragID);
-    glDetachShader(programID, geoID);
+    glUseProgram(0);
+    if(vertID != -1)
+        glDetachShader(programID, vertID);
+    if(fragID != -1)
+        glDetachShader(programID, fragID);
+    if(geoID != -1)
+        glDetachShader(programID, geoID);
+    if(tessCID != -1)
+        glDetachShader(programID, tessCID);
+    if(tessEID != -1)
+        glDetachShader(programID, tessEID);
+    if(computeID != -1)
+        glDetachShader(programID, computeID);
     glDeleteProgram(programID);
     locations.clear();
 }
