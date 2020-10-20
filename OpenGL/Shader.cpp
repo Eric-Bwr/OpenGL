@@ -287,8 +287,10 @@ void Shader::addTessellationEvaluationShader(const char *tessEval){
 }
 
 void Shader::finish() const{
-    glLinkProgram(programID);
-    glValidateProgram(programID);
+    if(!hasError()) {
+        glLinkProgram(programID);
+        glValidateProgram(programID);
+    }
 }
 
 unsigned int Shader::compileShader(unsigned int type, const char* source) {
@@ -393,6 +395,21 @@ void Shader::unbind() {
 }
 
 void Shader::reload() {
+    errors.failedToLocate = false;
+    errors.failedToAllocate = false;
+    errors.fileIsEmpty = false;
+    errors.unknownType = false;
+    errors.failedToCompileVertex = false;
+    errors.vertexMessage = "";
+    errors.failedToCompileFragment = false;
+    errors.fragmentMessage = "";
+    errors.failedToCompileGeometry = false;
+    errors.geometryMessage = "";
+    errors.failedToCompileTessEval = false;
+    errors.tessEvalMessage = "";
+    errors.failedToCompileTessControl = false;
+    errors.tessControlMessage = "";
+    errors.failedToCompileCompute = false;
     char* fileData = readFile(path);
     if (!fileData) {
         errors.failedToLocate = true;
@@ -508,8 +525,11 @@ void Shader::reload() {
                 computeID = compileShader(GL_COMPUTE_SHADER, compute->data());
                 glAttachShader(programID, computeID);
             }
-            glLinkProgram(programID);
-            glValidateProgram(programID);
+            if(!hasError()) {
+                glLinkProgram(programID);
+                glValidateProgram(programID);
+                glUseProgram(programID);
+            }
             delete vertex;
             delete fragment;
             delete geometry;
@@ -518,7 +538,6 @@ void Shader::reload() {
             delete compute;
         }
     }
-    glUseProgram(programID);
 }
 
 int Shader::getUniform(const char* name) {
