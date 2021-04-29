@@ -36,7 +36,15 @@ VertexBufferObjectLayout::~VertexBufferObjectLayout() {
     elements.clear();
 }
 
+VertexBufferObject::VertexBufferObject() = default;
+
 VertexBufferObject::VertexBufferObject(const void* data, uint64_t size, unsigned int drawMode){
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, size, data, drawMode);
+}
+
+void VertexBufferObject::init(const void* data, uint64_t size, unsigned int drawMode){
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, size, data, drawMode);
@@ -44,7 +52,7 @@ VertexBufferObject::VertexBufferObject(const void* data, uint64_t size, unsigned
 
 void VertexBufferObject::subData(const void *data, uint64_t size, unsigned int offset, unsigned int drawMode) const {
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, size, data, drawMode);
+    glBufferData(GL_ARRAY_BUFFER, size, nullptr, drawMode);
     glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 }
 
@@ -101,7 +109,7 @@ IndicesBufferObject::IndicesBufferObject(const unsigned int* data, uint64_t coun
 
 void IndicesBufferObject::subData(const void *data, uint64_t size, unsigned int offset, unsigned int drawMode) const {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, drawMode);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, nullptr, drawMode);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
 }
 

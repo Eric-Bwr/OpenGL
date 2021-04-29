@@ -2,6 +2,7 @@
 
 #include "OpenGL.h"
 #include <map>
+#include <string>
 
 class Shader{
 public:
