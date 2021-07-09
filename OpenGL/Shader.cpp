@@ -290,6 +290,7 @@ void Shader::finish() const{
     if(!hasError()) {
         glLinkProgram(programID);
         glValidateProgram(programID);
+        glUseProgram(programID);
     }
 }
 
