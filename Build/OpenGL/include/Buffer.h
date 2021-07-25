@@ -37,7 +37,9 @@ private:
 
 class VertexBufferObject {
 public:
+    VertexBufferObject();
     VertexBufferObject(const void* data, uint64_t size, unsigned int drawMode);
+    void init(const void* data, uint64_t size, unsigned int drawMode);
     void subData(const void* data, uint64_t size, unsigned int offset, unsigned int drawMode) const;
     void bind() const;
     static void unbind() ;

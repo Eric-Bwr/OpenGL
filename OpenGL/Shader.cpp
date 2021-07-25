@@ -54,7 +54,7 @@ Shader::Shader(const char* path) : path(path){
         }
         splitData.emplace_back(buffer);
         for(uint64_t i = 0; i < splitData.size(); i++) {
-            char* line = splitData.at(i).data();
+            char* line = const_cast<char *>(splitData.at(i).data());
             if (strstr(line, "#vertex") != nullptr) {
                 type = 0;
             }else if (strstr(line, "#fragment") != nullptr) {
@@ -172,7 +172,7 @@ void Shader::addFromFile(const char* path){
         }
         splitData.emplace_back(buffer);
         for(auto & i : splitData) {
-            char* line = i.data();
+            char* line = const_cast<char *>(i.data());
             if (strstr(line, "#vertex") != nullptr) {
                 type = 0;
             }else if (strstr(line, "#fragment") != nullptr) {
@@ -303,7 +303,7 @@ unsigned int Shader::compileShader(unsigned int type, const char* source) {
     if (result == GL_FALSE) {
         int length;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        char* message = (char*)alloca(length * sizeof(char));
+        char* message = (char*)malloc(length * sizeof(char));
         glGetShaderInfoLog(id, length, &length, message);
         if(type == GL_VERTEX_SHADER){
             errors.failedToCompileVertex = true;
@@ -434,7 +434,7 @@ void Shader::reload() {
         }
         splitData.emplace_back(buffer);
         for(auto & i : splitData) {
-            char* line = i.data();
+            char* line = const_cast<char *>(i.data());
             if (strstr(line, "#vertex") != nullptr) {
                 type = 0;
             }else if (strstr(line, "#fragment") != nullptr) {
@@ -609,6 +609,10 @@ void Shader::setUniform4f(const char* name, const float& x, const float& y, cons
 
 void Shader::setUniformMatrix4f(const char* name, const float* matrix) {
     glUniformMatrix4fv(getUniform(name), 1, GL_FALSE, matrix);
+}
+
+void Shader::setUniformMatrix4d(const char* name, const double* matrix) {
+    glUniformMatrix4dv(getUniform(name), 1, GL_FALSE, matrix);
 }
 
 Shader::~Shader() {
