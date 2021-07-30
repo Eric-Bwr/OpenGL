@@ -51,6 +51,7 @@ private:
 class VertexArrayObject {
 public:
     VertexArrayObject();
+    void init();
     void addBuffer(const VertexBufferObject& vbo, const VertexBufferObjectLayout& vertexArrayObjectLayout) const;
     void bind() const;
     static void unbind() ;

@@ -611,6 +611,13 @@ void Shader::setUniformMatrix4f(const char* name, const float* matrix) {
     glUniformMatrix4fv(getUniform(name), 1, GL_FALSE, matrix);
 }
 
+void Shader::setUniformMatrix4f(const char* name, const double* matrix) {
+   float temp[16] = {};
+   for(int i = 0; i < 16; i++)
+       temp[i] = float(matrix[i]);
+   glUniformMatrix4fv(getUniform(name), 1, GL_FALSE, temp);
+}
+
 void Shader::setUniformMatrix4d(const char* name, const double* matrix) {
     glUniformMatrix4dv(getUniform(name), 1, GL_FALSE, matrix);
 }

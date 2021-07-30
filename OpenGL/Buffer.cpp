@@ -69,8 +69,11 @@ VertexBufferObject::~VertexBufferObject(){
     glDeleteBuffers(1, &vbo);
 }
 
-VertexArrayObject::VertexArrayObject() {
+VertexArrayObject::VertexArrayObject() = default;
+
+void VertexArrayObject::init(){
     glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 }
 
 void VertexArrayObject::addBuffer(const VertexBufferObject &vbo, const VertexBufferObjectLayout &vertexArrayObjectLayout) const {
