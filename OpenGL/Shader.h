@@ -1,6 +1,7 @@
 #pragma once
 
 #include "OpenGL.h"
+#include <vector>
 #include <map>
 #include <string>
 
@@ -55,6 +56,8 @@ public:
     void setUniformMatrix4f(const char* name, const float* matrix);
     void setUniformMatrix4f(const char* name, const double* matrix);
     void setUniformMatrix4d(const char* name, const double* matrix);
+    void addUniforms(std::vector<const char*> names);
+    void addUniform(const char* name);
     inline unsigned int getProgramID() const { return programID; }
     inline Errors& getErrors(){ return errors; }
     bool hasError() const;
