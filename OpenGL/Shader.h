@@ -56,8 +56,8 @@ public:
     void setUniformMatrix4f(const char* name, const float* matrix);
     void setUniformMatrix4f(const char* name, const double* matrix);
     void setUniformMatrix4d(const char* name, const double* matrix);
-    void addUniforms(std::vector<const char*> names);
-    void addUniform(const char* name);
+    void addUniforms(std::vector<std::string> names);
+    void addUniform(std::string name);
     inline unsigned int getProgramID() const { return programID; }
     inline Errors& getErrors(){ return errors; }
     bool hasError() const;
@@ -73,7 +73,7 @@ private:
     unsigned int tessEID = -1;
     unsigned int computeID = -1;
     char* readFile(const char* filePath);
-    std::map<const char*, unsigned int> locations;
+    std::map<std::string, unsigned int> locations;
     int getUniform(const char* name);
     unsigned int compileShader(unsigned int type, const char* source);
     Errors errors;

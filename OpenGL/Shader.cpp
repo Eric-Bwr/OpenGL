@@ -538,19 +538,19 @@ void Shader::reload() {
     }
 }
 
-void Shader::addUniforms(std::vector<const char *> names) {
+void Shader::addUniforms(std::vector<std::string> names) {
     for (auto name : names) {
         if (!locations.count(name)) {
-            int id = glGetUniformLocation(programID, name);
-            locations.insert(std::pair<const char *, unsigned int>(name, id));
+            int id = glGetUniformLocation(programID, name.data());
+            locations.insert(std::pair<std::string, int>(name, id));
         }
     }
 }
 
-void Shader::addUniform(const char *name) {
+void Shader::addUniform(std::string name) {
     if (!locations.count(name)) {
-        int id = glGetUniformLocation(programID, name);
-        locations.insert(std::pair<const char *, unsigned int>(name, id));
+        int id = glGetUniformLocation(programID, name.data());
+        locations.insert(std::pair<std::string, int>(name, id));
     }
 }
 
