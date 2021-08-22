@@ -143,7 +143,6 @@ Shader::Shader(const char *path) : path(path) {
 
 Shader::Shader() {
     programID = glCreateProgram();
-    glUseProgram(programID);
 }
 
 void Shader::addFromFile(const char *path) {

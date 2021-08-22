@@ -11,6 +11,7 @@ struct VertexElement {
     static unsigned int getSizeOfType(unsigned int type){
         switch(type) {
             case GL_FLOAT: return 4;
+            case GL_DOUBLE: return 8;
             case GL_UNSIGNED_INT: return 4;
             case GL_UNSIGNED_BYTE: return 1;
         }
@@ -23,6 +24,8 @@ public:
     VertexBufferObjectLayout();
     void pushFloat(unsigned int count);
     void pushFloatDivided(unsigned int count);
+    void pushDouble(unsigned int count);
+    void pushDoubleDivided(unsigned int count);
     void pushInt(unsigned int count);
     void pushIntDivided(unsigned int count);
     void pushByte(unsigned int count);
@@ -63,13 +66,15 @@ private:
 
 class IndicesBufferObject {
 public:
+    IndicesBufferObject();
     IndicesBufferObject(const unsigned int* data, uint64_t count, unsigned int drawType);
+    void init(const unsigned int* data, uint64_t count, unsigned int drawType);
     void subData(const void* data, uint64_t size, unsigned int offset, unsigned int drawMode) const;
     void bind() const;
     static void unbind();
-    inline unsigned int getCount() const { return innerCount; }
+    inline unsigned int getCount() const { return count; }
     ~IndicesBufferObject();
 private:
-    uint64_t innerCount;
+    uint64_t count;
     unsigned int ibo;
 };

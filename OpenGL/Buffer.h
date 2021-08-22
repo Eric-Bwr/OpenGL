@@ -66,13 +66,15 @@ private:
 
 class IndicesBufferObject {
 public:
+    IndicesBufferObject();
     IndicesBufferObject(const unsigned int* data, uint64_t count, unsigned int drawType);
+    void init(const unsigned int* data, uint64_t count, unsigned int drawType);
     void subData(const void* data, uint64_t size, unsigned int offset, unsigned int drawMode) const;
     void bind() const;
     static void unbind();
-    inline unsigned int getCount() const { return innerCount; }
+    inline unsigned int getCount() const { return count; }
     ~IndicesBufferObject();
 private:
-    uint64_t innerCount;
+    uint64_t count;
     unsigned int ibo;
 };

@@ -114,7 +114,16 @@ VertexArrayObject::~VertexArrayObject() {
     glDeleteVertexArrays(1, &vao);
 }
 
-IndicesBufferObject::IndicesBufferObject(const unsigned int *data, uint64_t count, unsigned int drawType) : innerCount(count) {
+IndicesBufferObject::IndicesBufferObject() = default;
+
+IndicesBufferObject::IndicesBufferObject(const unsigned int *data, uint64_t count, unsigned int drawType) : count(count) {
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, drawType);
+}
+
+void IndicesBufferObject::init(const unsigned int *data, uint64_t count, unsigned int drawType) {
+    this->count = count;
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, drawType);
