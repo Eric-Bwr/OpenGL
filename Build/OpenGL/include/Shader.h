@@ -53,9 +53,9 @@ public:
     void setUniform2fv(const char* name, const int& size, const float* data);
     void setUniform3f(const char* name, const float& x, const float& y, const float& z);
     void setUniform4f(const char* name, const float& x, const float& y, const float& z, const float& w);
-    void setUniformMatrix4f(const char* name, const float* matrix);
-    void setUniformMatrix4f(const char* name, const double* matrix);
-    void setUniformMatrix4d(const char* name, const double* matrix);
+    void setUniformMatrix4f(const char* name, const float* matrix, int count = 1);
+    void setUniformMatrix4f(const char* name, const double* matrix, int count = 1);
+    void setUniformMatrix4d(const char* name, const double* matrix, int count = 1);
     void addUniforms(std::vector<std::string> names);
     void addUniform(std::string name);
     inline unsigned int getProgramID() const { return programID; }

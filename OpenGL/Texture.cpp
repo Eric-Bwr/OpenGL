@@ -283,7 +283,7 @@ bool Texture::hasError() const{
 
 std::string Texture::getErrorMessage() {
     std::string result;
-    if (!(path && !path[0])) {
+    if (!path.empty()) {
         result.append(path);
         result.append("\n");
     }

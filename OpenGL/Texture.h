@@ -51,7 +51,7 @@ public:
     void nearest() const;
     void generateMipMap() const;
     uint8_t* getData() { return data; }
-    const char* getPath() { return path; }
+    std::string getPath() { return path; }
     unsigned int getFormat() const { return format; }
     unsigned int getInternalFormat() const { return internalFormat; }
     unsigned int getTarget() const { return target; }
@@ -67,7 +67,7 @@ public:
     inline Errors& getErrors(){ return errors; }
     ~Texture();
 private:
-    const char* path;
+    std::string path;
     bool fixedSamples = true;
     float bias = -0.4f, factor;
     unsigned int target = GL_TEXTURE_2D, internalFormat = GL_RGBA8, format = GL_RGBA, type = GL_UNSIGNED_BYTE, depth;
