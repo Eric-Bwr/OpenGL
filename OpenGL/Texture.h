@@ -21,6 +21,7 @@ public:
     void load();
     void bind() const;
     void unbind() const;
+    inline void setPath(const char* path) { this->path = path; }
     inline void setData(uint8_t* data) { this->data = data; }
     inline void setWidth(int width) { this->width = width; }
     inline void setHeight(int height) { this->height = height; }
