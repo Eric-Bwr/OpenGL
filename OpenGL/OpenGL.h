@@ -4656,7 +4656,7 @@ typedef void (*GLADpostcallback)(void *ret, const char *name, GLADapiproc apipro
 #define GL_Z_EXT 0x87D7
 
 
-#include <KHR/khrplatform.h>
+#include <cstdint>
 
 typedef unsigned int GLenum;
 
@@ -4666,25 +4666,25 @@ typedef unsigned int GLbitfield;
 
 typedef void GLvoid;
 
-typedef khronos_int8_t GLbyte;
+typedef int8_t GLbyte;
 
-typedef khronos_uint8_t GLubyte;
+typedef uint8_t GLubyte;
 
-typedef khronos_int16_t GLshort;
+typedef int16_t GLshort;
 
-typedef khronos_uint16_t GLushort;
+typedef uint16_t GLushort;
 
 typedef int GLint;
 
 typedef unsigned int GLuint;
 
-typedef khronos_int32_t GLclampx;
+typedef int32_t GLclampx;
 
 typedef int GLsizei;
 
-typedef khronos_float_t GLfloat;
+typedef float GLfloat;
 
-typedef khronos_float_t GLclampf;
+typedef float GLclampf;
 
 typedef double GLdouble;
 
@@ -4704,43 +4704,31 @@ typedef void *GLhandleARB;
 typedef unsigned int GLhandleARB;
 #endif
 
-typedef khronos_uint16_t GLhalf;
+typedef uint16_t GLhalf;
 
-typedef khronos_uint16_t GLhalfARB;
+typedef uint16_t GLhalfARB;
 
-typedef khronos_int32_t GLfixed;
+typedef int32_t GLfixed;
 
-#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) && (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)
-typedef khronos_intptr_t GLintptr;
+#ifdef _WIN64
+typedef signed long long int GLintptr;
+typedef signed long long int GLsizeiptrARB;
+typedef signed long long int GLsizeiptr;
 #else
-typedef khronos_intptr_t GLintptr;
+typedef signed long int GLintptr;
+typedef signed long int GLsizeiptrARB;
+typedef signed long int GLsizeiptr;
 #endif
 
-#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) && (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)
-typedef khronos_intptr_t GLintptrARB;
-#else
-typedef khronos_intptr_t GLintptrARB;
-#endif
+typedef int GLintptrARB;
 
-#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) && (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)
-typedef khronos_ssize_t GLsizeiptr;
-#else
-typedef khronos_ssize_t GLsizeiptr;
-#endif
+typedef int64_t GLint64;
 
-#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) && (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)
-typedef khronos_ssize_t GLsizeiptrARB;
-#else
-typedef khronos_ssize_t GLsizeiptrARB;
-#endif
+typedef int64_t GLint64EXT;
 
-typedef khronos_int64_t GLint64;
+typedef uint64_t GLuint64;
 
-typedef khronos_int64_t GLint64EXT;
-
-typedef khronos_uint64_t GLuint64;
-
-typedef khronos_uint64_t GLuint64EXT;
+typedef uint64_t GLuint64EXT;
 
 typedef struct __GLsync *GLsync;
 

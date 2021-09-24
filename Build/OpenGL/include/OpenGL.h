@@ -33,19 +33,19 @@
 #pragma clang diagnostic ignored "-Wreserved-id-macro"
 #endif
 #ifdef __gl_h_
-  #error OpenGL (gl.h) header already included (API: gl), remove previous include!
+#error OpenGL (gl.h) header already included (API: gl), remove previous include!
 #endif
 #define __gl_h_ 1
 #ifdef __gl3_h_
-  #error OpenGL (gl3.h) header already included (API: gl), remove previous include!
+#error OpenGL (gl3.h) header already included (API: gl), remove previous include!
 #endif
 #define __gl3_h_ 1
 #ifdef __glext_h_
-  #error OpenGL (glext.h) header already included (API: gl), remove previous include!
+#error OpenGL (glext.h) header already included (API: gl), remove previous include!
 #endif
 #define __glext_h_ 1
 #ifdef __gl3ext_h_
-  #error OpenGL (gl3ext.h) header already included (API: gl), remove previous include!
+#error OpenGL (gl3ext.h) header already included (API: gl), remove previous include!
 #endif
 #define __gl3ext_h_ 1
 #ifdef __clang__
@@ -62,90 +62,90 @@ extern "C" {
 #define GLAD_PLATFORM_H_
 
 #ifndef GLAD_PLATFORM_WIN32
-  #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__MINGW32__)
-    #define GLAD_PLATFORM_WIN32 1
-  #else
-    #define GLAD_PLATFORM_WIN32 0
-  #endif
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__MINGW32__)
+#define GLAD_PLATFORM_WIN32 1
+#else
+#define GLAD_PLATFORM_WIN32 0
+#endif
 #endif
 
 #ifndef GLAD_PLATFORM_APPLE
-  #ifdef __APPLE__
-    #define GLAD_PLATFORM_APPLE 1
-  #else
-    #define GLAD_PLATFORM_APPLE 0
-  #endif
+#ifdef __APPLE__
+#define GLAD_PLATFORM_APPLE 1
+#else
+#define GLAD_PLATFORM_APPLE 0
+#endif
 #endif
 
 #ifndef GLAD_PLATFORM_EMSCRIPTEN
-  #ifdef __EMSCRIPTEN__
-    #define GLAD_PLATFORM_EMSCRIPTEN 1
-  #else
-    #define GLAD_PLATFORM_EMSCRIPTEN 0
-  #endif
+#ifdef __EMSCRIPTEN__
+#define GLAD_PLATFORM_EMSCRIPTEN 1
+#else
+#define GLAD_PLATFORM_EMSCRIPTEN 0
+#endif
 #endif
 
 #ifndef GLAD_PLATFORM_UWP
-  #if defined(_MSC_VER) && !defined(GLAD_INTERNAL_HAVE_WINAPIFAMILY)
-    #ifdef __has_include
-      #if __has_include(<winapifamily.h>)
-        #define GLAD_INTERNAL_HAVE_WINAPIFAMILY 1
-      #endif
-    #elif _MSC_VER >= 1700 && !_USING_V110_SDK71_
-      #define GLAD_INTERNAL_HAVE_WINAPIFAMILY 1
-    #endif
-  #endif
+#if defined(_MSC_VER) && !defined(GLAD_INTERNAL_HAVE_WINAPIFAMILY)
+#ifdef __has_include
+#if __has_include(<winapifamily.h>)
+#define GLAD_INTERNAL_HAVE_WINAPIFAMILY 1
+#endif
+#elif _MSC_VER >= 1700 && !_USING_V110_SDK71_
+#define GLAD_INTERNAL_HAVE_WINAPIFAMILY 1
+#endif
+#endif
 
-  #ifdef GLAD_INTERNAL_HAVE_WINAPIFAMILY
-    #include <winapifamily.h>
-    #if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
-      #define GLAD_PLATFORM_UWP 1
-    #endif
-  #endif
+#ifdef GLAD_INTERNAL_HAVE_WINAPIFAMILY
+#include <winapifamily.h>
+#if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
+#define GLAD_PLATFORM_UWP 1
+#endif
+#endif
 
-  #ifndef GLAD_PLATFORM_UWP
-    #define GLAD_PLATFORM_UWP 0
-  #endif
+#ifndef GLAD_PLATFORM_UWP
+#define GLAD_PLATFORM_UWP 0
+#endif
 #endif
 
 #ifdef __GNUC__
-  #define GLAD_GNUC_EXTENSION __extension__
+#define GLAD_GNUC_EXTENSION __extension__
 #else
-  #define GLAD_GNUC_EXTENSION
+#define GLAD_GNUC_EXTENSION
 #endif
 
 #ifndef GLAD_API_CALL
-  #if defined(GLAD_API_CALL_EXPORT)
-    #if GLAD_PLATFORM_WIN32 || defined(__CYGWIN__)
-      #if defined(GLAD_API_CALL_EXPORT_BUILD)
-        #if defined(__GNUC__)
-          #define GLAD_API_CALL __attribute__ ((dllexport)) extern
-        #else
-          #define GLAD_API_CALL __declspec(dllexport) extern
-        #endif
-      #else
-        #if defined(__GNUC__)
-          #define GLAD_API_CALL __attribute__ ((dllimport)) extern
-        #else
-          #define GLAD_API_CALL __declspec(dllimport) extern
-        #endif
-      #endif
-    #elif defined(__GNUC__) && defined(GLAD_API_CALL_EXPORT_BUILD)
-      #define GLAD_API_CALL __attribute__ ((visibility ("default"))) extern
-    #else
-      #define GLAD_API_CALL extern
-    #endif
-  #else
-    #define GLAD_API_CALL extern
-  #endif
+#if defined(GLAD_API_CALL_EXPORT)
+#if GLAD_PLATFORM_WIN32 || defined(__CYGWIN__)
+#if defined(GLAD_API_CALL_EXPORT_BUILD)
+#if defined(__GNUC__)
+#define GLAD_API_CALL __attribute__ ((dllexport)) extern
+#else
+#define GLAD_API_CALL __declspec(dllexport) extern
+#endif
+#else
+#if defined(__GNUC__)
+#define GLAD_API_CALL __attribute__ ((dllimport)) extern
+#else
+#define GLAD_API_CALL __declspec(dllimport) extern
+#endif
+#endif
+#elif defined(__GNUC__) && defined(GLAD_API_CALL_EXPORT_BUILD)
+#define GLAD_API_CALL __attribute__ ((visibility ("default"))) extern
+#else
+#define GLAD_API_CALL extern
+#endif
+#else
+#define GLAD_API_CALL extern
+#endif
 #endif
 
 #ifdef APIENTRY
-  #define GLAD_API_PTR APIENTRY
+#define GLAD_API_PTR APIENTRY
 #elif GLAD_PLATFORM_WIN32
-  #define GLAD_API_PTR __stdcall
+#define GLAD_API_PTR __stdcall
 #else
-  #define GLAD_API_PTR
+#define GLAD_API_PTR
 #endif
 
 #ifndef GLAPI
@@ -4656,7 +4656,7 @@ typedef void (*GLADpostcallback)(void *ret, const char *name, GLADapiproc apipro
 #define GL_Z_EXT 0x87D7
 
 
-#include <KHR/khrplatform.h>
+#include <cstdint>
 
 typedef unsigned int GLenum;
 
@@ -4666,25 +4666,25 @@ typedef unsigned int GLbitfield;
 
 typedef void GLvoid;
 
-typedef khronos_int8_t GLbyte;
+typedef int8_t GLbyte;
 
-typedef khronos_uint8_t GLubyte;
+typedef uint8_t GLubyte;
 
-typedef khronos_int16_t GLshort;
+typedef int16_t GLshort;
 
-typedef khronos_uint16_t GLushort;
+typedef uint16_t GLushort;
 
 typedef int GLint;
 
 typedef unsigned int GLuint;
 
-typedef khronos_int32_t GLclampx;
+typedef int32_t GLclampx;
 
 typedef int GLsizei;
 
-typedef khronos_float_t GLfloat;
+typedef float GLfloat;
 
-typedef khronos_float_t GLclampf;
+typedef float GLclampf;
 
 typedef double GLdouble;
 
@@ -4704,43 +4704,31 @@ typedef void *GLhandleARB;
 typedef unsigned int GLhandleARB;
 #endif
 
-typedef khronos_uint16_t GLhalf;
+typedef uint16_t GLhalf;
 
-typedef khronos_uint16_t GLhalfARB;
+typedef uint16_t GLhalfARB;
 
-typedef khronos_int32_t GLfixed;
+typedef int32_t GLfixed;
 
-#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) && (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)
-typedef khronos_intptr_t GLintptr;
+#ifdef _WIN64
+typedef signed long long int GLintptr;
+typedef signed long long int GLsizeiptrARB;
+typedef signed long long int GLsizeiptr;
 #else
-typedef khronos_intptr_t GLintptr;
+typedef signed long int GLintptr;
+typedef signed long int GLsizeiptrARB;
+typedef signed long int GLsizeiptr;
 #endif
 
-#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) && (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)
-typedef khronos_intptr_t GLintptrARB;
-#else
-typedef khronos_intptr_t GLintptrARB;
-#endif
+typedef int GLintptrARB;
 
-#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) && (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)
-typedef khronos_ssize_t GLsizeiptr;
-#else
-typedef khronos_ssize_t GLsizeiptr;
-#endif
+typedef int64_t GLint64;
 
-#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) && (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ > 1060)
-typedef khronos_ssize_t GLsizeiptrARB;
-#else
-typedef khronos_ssize_t GLsizeiptrARB;
-#endif
+typedef int64_t GLint64EXT;
 
-typedef khronos_int64_t GLint64;
+typedef uint64_t GLuint64;
 
-typedef khronos_int64_t GLint64EXT;
-
-typedef khronos_uint64_t GLuint64;
-
-typedef khronos_uint64_t GLuint64EXT;
+typedef uint64_t GLuint64EXT;
 
 typedef struct __GLsync *GLsync;
 
