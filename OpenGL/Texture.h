@@ -39,17 +39,18 @@ public:
     void mirroredRepeat() const;
     void clampEdgeMirrored() const;
     void minNear() const;
+    void magNear() const;
     void minLinear() const;
+    void magLinear() const;
     void minLinearMipLinear() const;
     void minLinearMipNear() const;
     void minNearMipLinear() const;
     void minNearMipNear() const;
     void setLodBias(float bias);
-    void magNear() const;
-    void magLinear() const;
     void clampEdge() const;
     void clampBorder() const;
     void nearest() const;
+    void linear() const;
     void generateMipMap() const;
     uint8_t* getData() { return data; }
     std::string getPath() { return path; }

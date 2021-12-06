@@ -208,8 +208,16 @@ void Texture::minNear() const {
     glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
 
+void Texture::magNear() const {
+    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+}
+
 void Texture::minLinear() const {
     glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+}
+
+void Texture::magLinear() const {
+    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 void Texture::minLinearMipLinear() const {
@@ -233,14 +241,6 @@ void Texture::setLodBias(float bias){
     glTexParameterf(target, GL_TEXTURE_LOD_BIAS, bias);
 }
 
-void Texture::magNear() const {
-    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-}
-
-void Texture::magLinear() const {
-    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-}
-
 void Texture::clampEdge() const {
     glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -254,9 +254,13 @@ void Texture::clampBorder() const {
 }
 
 void Texture::nearest() const {
-    glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_NEAREST);
-    glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_NEAREST);
-    glTexParameteri(target, GL_TEXTURE_WRAP_R, GL_NEAREST);
+    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+}
+
+void Texture::linear() const {
+    glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 void Texture::generateMipMap() const {
