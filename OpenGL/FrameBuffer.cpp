@@ -58,6 +58,10 @@ FrameBuffer::~FrameBuffer() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glDeleteFramebuffers(1, &frameBuffer);
+    for(auto colorBuffer : colorBuffers)
+        delete colorBuffer;
+    for(auto renderBuffer : renderBuffers)
+        delete renderBuffer;
     colorBuffers.clear();
     renderBuffers.clear();
 }
