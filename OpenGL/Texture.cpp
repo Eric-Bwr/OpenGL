@@ -254,7 +254,7 @@ void Texture::clampBorder() const {
 }
 
 void Texture::nearest() const {
-    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
