@@ -97,6 +97,11 @@ void Texture::load(bool shouldFree){
             if(shouldFree)
                 free(data);
             break;
+        case GL_TEXTURE_2D_ARRAY:
+            glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, internalFormat, width, height, depth, 0, format, type, data);
+            if(shouldFree)
+                free(data);
+            break;
         case GL_TEXTURE_CUBE_MAP:
             for(int i = 0; i < 6; i++) {
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, type, cubeMapData.at(i));
