@@ -18,12 +18,10 @@ void FrameBuffer::attachRenderBuffer(RenderBuffer& renderBuffer, unsigned int at
 }
 
 void FrameBuffer::resize(int width, int height){
-    for(uint64_t i = 0; i < colorBuffers.size(); i++){
-        colorBuffers.at(i)->resize(width, height);
-    }
-    for(uint64_t i = 0; i < renderBuffers.size(); i++){
-        renderBuffers.at(i)->resize(width, height);
-    }
+    for(auto& colorBuffer : colorBuffers)
+        colorBuffer->resize(width, height);
+    for(auto& renderBuffer : renderBuffers)
+        renderBuffer->resize(width, height);
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
@@ -58,10 +56,6 @@ FrameBuffer::~FrameBuffer() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glDeleteFramebuffers(1, &frameBuffer);
-    for(auto colorBuffer : colorBuffers)
-        delete colorBuffer;
-    for(auto renderBuffer : renderBuffers)
-        delete renderBuffer;
     colorBuffers.clear();
     renderBuffers.clear();
 }

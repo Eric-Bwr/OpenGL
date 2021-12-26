@@ -60,9 +60,11 @@ void VertexBufferObject::init(const void *data, uint64_t size, unsigned int draw
     glBufferData(GL_ARRAY_BUFFER, size, data, drawMode);
 }
 
-void VertexBufferObject::subData(const void *data, uint64_t size, unsigned int offset, unsigned int drawMode) const {
+void VertexBufferObject::subData(const void *data, uint64_t size, unsigned int offset, unsigned int drawMode) {
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, size, nullptr, drawMode);
+    if(oldSize < size)
+        glBufferData(GL_ARRAY_BUFFER, size, nullptr, drawMode);
+    oldSize = size;
     glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 }
 

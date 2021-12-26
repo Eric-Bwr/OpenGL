@@ -1,5 +1,5 @@
 #include "Texture.h"
-#include "GLUtil/GLFileStream.h"
+#include "GLUtil/STB.h"
 #include <string>
 
 Texture::Texture() {
@@ -10,85 +10,76 @@ Texture::Texture(unsigned int target) : target(target) {
     glGenTextures(1, &id);
 }
 
-Texture::Texture(const char *path, unsigned int target, int components) : path(path) {
-    if(target == GL_TEXTURE_CUBE_MAP){
-        this->target = GL_TEXTURE_CUBE_MAP;
-        glGenTextures(1, &id);
-        for (int i = 0; i < 6; i++){
-            std::string newPath = path;
-            switch (i){
-                case 0:
-                    newPath += "/right.bif";
-                    break;
-                case 1:
-                    newPath += "/left.bif";
-                    break;
-                case 2:
-                    newPath += "/top.bif";
-                    break;
-                case 3:
-                    newPath += "/bottom.bif";
-                    break;
-                case 4:
-                    newPath += "/back.bif";
-                    break;
-                case 5:
-                    newPath += "/front.bif";
-                    break;
-            }
-            BinaryBuffer binaryBuffer;
-            BinaryBufferError errorCache = binaryBufferReadFromFile(&binaryBuffer, newPath.data());
-            if(errorCache == BBE_CANT_FIND_FILE)
-                errors.failedToLocate = true;
-            if(errorCache == BBE_CANT_FIND_FILE)
-                errors.failedToAllocate = true;
-            width = binaryBufferPop64(&binaryBuffer);
-            height = binaryBufferPop64(&binaryBuffer);
-            int nrComponents = binaryBufferPop64(&binaryBuffer);
-            data = (uint8_t*)binaryBufferPopString(&binaryBuffer, width * height * nrComponents);
-            if(components != -1)
-                nrComponents = components;
-            if(data == nullptr) {
-                errors.failedToReadData = true;
-            } else {
-                if (nrComponents == 1)
-                    format = GL_RED;
-                else if (nrComponents == 3)
-                    format = GL_RGB;
-                else if (nrComponents == 4)
-                    format = GL_RGBA;
-                cubeMapData.emplace_back(data);
-            }
-            binaryBufferDestroy(&binaryBuffer);
-        }
-    }else{
-        std::string newPath(path);
-        newPath.append(".bif");
-        BinaryBuffer binaryBuffer;
-        BinaryBufferError errorCache = binaryBufferReadFromFile(&binaryBuffer, newPath.data());
-        if(errorCache == BBE_CANT_FIND_FILE)
-            errors.failedToLocate = true;
-        if(errorCache == BBE_CANT_FIND_FILE)
-            errors.failedToAllocate = true;
-        width = binaryBufferPop64(&binaryBuffer);
-        height = binaryBufferPop64(&binaryBuffer);
-        int nrComponents = binaryBufferPop64(&binaryBuffer);
-        data = (uint8_t*)binaryBufferPopString(&binaryBuffer, width * height * nrComponents);
-        if(components != -1)
-            nrComponents = components;
-        if(data == nullptr) {
-            errors.failedToReadData = true;
-        } else {
-            if (nrComponents == 1)
-                format = GL_RED;
-            else if (nrComponents == 3)
-                format = GL_RGB;
-            else if (nrComponents == 4)
-                format = GL_RGBA;
-            glGenTextures(1, &id);
-        }
-        binaryBufferDestroy(&binaryBuffer);
+Texture::Texture(const char *path, unsigned int target, int desiredChannels) : path(path), target(target) {
+    int nrComponents;
+    data = stbi_load(path, &width, &height, &nrComponents, desiredChannels);
+    if(!data)
+        errors.failedToReadData = true;
+    if (desiredChannels != 0)
+        nrComponents = desiredChannels;
+    if (nrComponents == 1) {
+        format = GL_RGB;
+        internalFormat = GL_R8;
+    } else if (nrComponents == 3) {
+        format = GL_RGB;
+        internalFormat = GL_RGB8;
+    } else if (nrComponents == 4) {
+        format = GL_RGBA;
+        internalFormat = GL_RGBA8;
     }
+    glGenTextures(1, &id);
+    load();
+    clampEdge();
+    minLinear();
+    magLinear();
+}
+
+Texture::Texture(const char* path, const char* ending, int desiredChannels) {
+    this->target = GL_TEXTURE_CUBE_MAP;
+    glGenTextures(1, &id);
+    int nrComponents;
+    for (int i = 0; i < 6; i++) {
+        std::string newPath = path;
+        switch (i) {
+            case 0:
+                newPath += "/right";
+                break;
+            case 1:
+                newPath += "/left";
+                break;
+            case 2:
+                newPath += "/top";
+                break;
+            case 3:
+                newPath += "/bottom";
+                break;
+            case 4:
+                newPath += "/back";
+                break;
+            case 5:
+                newPath += "/front";
+                break;
+        }
+        data = stbi_load(path, &width, &height, &nrComponents, desiredChannels);
+        if (!data)
+            errors.failedToReadData = true;
+        if (desiredChannels != 0)
+            nrComponents = desiredChannels;
+        if (nrComponents == 1) {
+            format = GL_RGB;
+            internalFormat = GL_R8;
+        } else if (nrComponents == 3) {
+            format = GL_RGB;
+            internalFormat = GL_RGB8;
+        } else if (nrComponents == 4) {
+            format = GL_RGBA;
+            internalFormat = GL_RGBA8;
+        }
+        if (!data)
+            errors.failedToReadData = true;
+        cubeMapData.emplace_back(data);
+    }
+    load();
 }
 
 void Texture::load(bool simple) {
@@ -282,7 +273,7 @@ float Texture::getTextureYOffset(int index) const{
 }
 
 bool Texture::hasError() const{
-    return errors.failedToGetTextureType || errors.failedToReadData || errors.failedToLocate || errors.failedToAllocate;
+    return errors.failedToGetTextureType || errors.failedToReadData;
 }
 
 std::string Texture::getErrorMessage() {
@@ -293,10 +284,6 @@ std::string Texture::getErrorMessage() {
     }
     if(!hasError())
         result.append("Successfully loaded");
-    if(errors.failedToLocate)
-        result.append("Failed to locate Texture\n");
-    if(errors.failedToAllocate)
-        result.append("Failed to allocate Memory\n");
     if(errors.failedToReadData)
         result.append("Failed to load Texture Data\n");
     if(errors.failedToGetTextureType)
