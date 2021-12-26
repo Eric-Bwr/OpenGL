@@ -14,10 +14,11 @@ private:
 public:
     explicit Texture();
     explicit Texture(unsigned int target);
-    explicit Texture(const char* path, unsigned int target = GL_TEXTURE_2D, int desiredChannels = 0);
-    explicit Texture(const char* path, const char* ending, int desiredChannels = 0);
-    void load(bool simple);
-    void load();
+    explicit Texture(const char* path, unsigned int target = GL_TEXTURE_2D, int desiredChannels = 0, bool shouldFree = true);
+    explicit Texture(const char* path, const char* ending, int desiredChannels = 0, bool shouldFree = true);
+    void load2D(bool simple, bool shouldFree = true);
+    void load(bool shouldFree = true);
+    void loadSub(const char* subPath, int index, int desiredChannels = 0, bool shouldFree = true);
     void bind() const;
     void unbind() const;
     inline void setPath(const char* path) { this->path = path; }
@@ -68,8 +69,9 @@ public:
     inline Errors& getErrors(){ return errors; }
     ~Texture();
 private:
+    void determineFormats(int nrComponents, int desiredChannels);
     std::string path;
-    bool fixedSamples = true;
+    bool fixedSamples = true, shouldFree = false;
     float bias = -0.4f, factor;
     unsigned int target = GL_TEXTURE_2D, internalFormat = GL_RGBA8, format = GL_RGBA, type = GL_UNSIGNED_BYTE, depth;
     unsigned int id;
