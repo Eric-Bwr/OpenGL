@@ -3,11 +3,12 @@ project(OpenGL)
 
 set(CMAKE_CXX_STANDARD 20)
 
-file(GLOB_RECURSE SOURCE_FILES "${PROJECT_NAME}/*.cpp" "${PROJECT_NAME}/*.h" "${PROJECT_NAME}/OpenGL.c")
+file(GLOB_RECURSE HEADER_FILES "${PROJECT_NAME}/*.h")
+file(GLOB_RECURSE SOURCE_FILES "${PROJECT_NAME}/*.cpp" "${PROJECT_NAME}/*.c")
 
 set(dir ${CMAKE_CURRENT_SOURCE_DIR})
 
 include_directories(${PROJECT_NAME})
 include_directories(Dependencies)
 
-add_library(${PROJECT_NAME} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
