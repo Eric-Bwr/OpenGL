@@ -12,10 +12,10 @@ private:
         bool failedToGetTextureType = false;
     };
 public:
-    explicit Texture();
-    explicit Texture(unsigned int target);
-    explicit Texture(const char* path, unsigned int target = GL_TEXTURE_2D, int desiredChannels = 0, bool shouldFree = true);
-    explicit Texture(const char* path, const char* ending, int desiredChannels = 0, bool shouldFree = true);
+    void init();
+    void init(unsigned int target);
+    void init(const char* path, unsigned int target = GL_TEXTURE_2D, int desiredChannels = 0, bool shouldFree = true);
+    void init(const char* path, const char* ending, int desiredChannels = 0, bool shouldFree = true);
     void load2D(bool simple, bool shouldFree = true);
     void load(bool shouldFree = true);
     void loadSub(const char* subPath, int index, int desiredChannels = 0, bool shouldFree = true);

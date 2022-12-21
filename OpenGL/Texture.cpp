@@ -2,15 +2,18 @@
 #include "GLUtil/STB.h"
 #include <string>
 
-Texture::Texture() {
+void Texture::init() {
     glGenTextures(1, &id);
 }
 
-Texture::Texture(unsigned int target) : target(target) {
+void Texture::init(unsigned int target) {
+    this->target = target;
     glGenTextures(1, &id);
 }
 
-Texture::Texture(const char *path, unsigned int target, int desiredChannels, bool shouldFree) : path(path), target(target) {
+void Texture::init(const char *path, unsigned int target, int desiredChannels, bool shouldFree) {
+    this->path = path;
+    this->target = target;
     int nrComponents;
     data = stbi_load(path, &width, &height, &nrComponents, desiredChannels);
     if(!data)
@@ -23,7 +26,7 @@ Texture::Texture(const char *path, unsigned int target, int desiredChannels, boo
     magLinear();
 }
 
-Texture::Texture(const char* path, const char* ending, int desiredChannels, bool shouldFree) {
+void Texture::init(const char* path, const char* ending, int desiredChannels, bool shouldFree) {
     this->target = GL_TEXTURE_CUBE_MAP;
     glGenTextures(1, &id);
     int nrComponents;
