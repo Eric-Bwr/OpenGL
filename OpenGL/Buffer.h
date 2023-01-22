@@ -40,8 +40,9 @@ private:
 
 class VertexBufferObject {
 public:
-    VertexBufferObject();
+    VertexBufferObject() = default;
     VertexBufferObject(const void* data, uint64_t size, unsigned int drawMode);
+    void init();
     void init(const void* data, uint64_t size, unsigned int drawMode);
     void subData(const void* data, uint64_t size, unsigned int offset, unsigned int drawMode);
     void bind() const;
@@ -54,7 +55,7 @@ private:
 
 class VertexArrayObject {
 public:
-    VertexArrayObject();
+    VertexArrayObject() = default;
     void init();
     void addBuffer(const VertexBufferObject& vbo, const VertexBufferObjectLayout& vertexArrayObjectLayout) const;
     void bind() const;
@@ -67,8 +68,9 @@ private:
 
 class IndicesBufferObject {
 public:
-    IndicesBufferObject();
+    IndicesBufferObject() = default;
     IndicesBufferObject(const unsigned int* data, uint64_t count, unsigned int drawType);
+    void init();
     void init(const unsigned int* data, uint64_t count, unsigned int drawType);
     void subData(const void* data, uint64_t size, unsigned int offset, unsigned int drawMode) const;
     void bind() const;
